@@ -1,0 +1,29 @@
+# Logs
+*.log
+logs/
+
+# New-API binary and build artifacts
+new-api/new-api
+new-api/bin/
+
+# Database
+*.db
+*.sqlite
+
+# Secrets / environment files
+.env
+.env.*
+*.secret
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude project memory
+.claude/
