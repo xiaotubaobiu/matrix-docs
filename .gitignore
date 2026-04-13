@@ -2,9 +2,11 @@
 *.log
 logs/
 
-# New-API binary and build artifacts
-new-api/new-api
-new-api/bin/
+# New-API (源码项目，不需要跟踪)
+new-api/
+
+# CLI-Proxy auth credentials (敏感凭证)
+cli-proxy/auths/
 
 # Database
 *.db
