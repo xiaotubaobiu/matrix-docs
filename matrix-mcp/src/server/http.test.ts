@@ -64,13 +64,13 @@ test("initialize returns protocol version and server info", async () => {
 test("mcp post requires bearer token", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     verifyToken: async () => {
       throw new Error("verifyToken should not be called when auth header is missing");
     },
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [],
     }),
@@ -96,13 +96,13 @@ test("initialize verifies bearer token before dispatch", async () => {
   let verifiedToken: string | undefined;
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     verifyToken: async (token) => {
       verifiedToken = token;
     },
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [],
     }),
@@ -124,13 +124,13 @@ test("initialize verifies bearer token before dispatch", async () => {
 test("mcp post rejects invalid bearer token after verification", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     verifyToken: async () => {
       throw new HttpError(401, "invalid_token", "Bearer token is invalid or unauthorized");
     },
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [],
     }),
@@ -158,13 +158,13 @@ test("mcp post rejects invalid bearer token after verification", async () => {
 test("mcp post surfaces token verification upstream failure", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     verifyToken: async () => {
       throw new HttpError(502, "token_verification_failed", "Token verification upstream returned HTTP 500");
     },
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [],
     }),
@@ -192,10 +192,10 @@ test("mcp post surfaces token verification upstream failure", async () => {
 test("tools/list returns injected tools", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [{
         name: "demo-tool",
@@ -225,10 +225,10 @@ test("tools/list returns injected tools", async () => {
 test("tools/call dispatches to injected tool", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [{
         name: "echo-tool",
@@ -268,10 +268,10 @@ test("tools/call dispatches to injected tool", async () => {
 test("ping returns empty result", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [],
     }),
@@ -294,7 +294,7 @@ test("ping returns empty result", async () => {
 test("mcp post without handler returns 501 error", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
   });
 
@@ -320,10 +320,10 @@ test("mcp post without handler returns 501 error", async () => {
 test("mcp post maps invalid tool input to 400 response", async () => {
   const handler = buildHttpHandler({
     mcpPath: "/mcp",
-    serviceName: "mimo-unified-mcp",
+    serviceName: "matrix-mcp",
     version: "0.1.0",
     mcpHandler: createMcpJsonRpcHandler({
-      serviceName: "mimo-unified-mcp",
+      serviceName: "matrix-mcp",
       version: "0.1.0",
       tools: [{
         name: "validated-tool",
