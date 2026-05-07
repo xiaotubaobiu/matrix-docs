@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "matrix-mcp": {
+      "type": "http",
+      "url": "https://matrix.000328.xyz:2053/mcp",
+      "headers": {
+        "Authorization": "Bearer <token>"
+      }
+    }
+  }
+}
