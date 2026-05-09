@@ -15,7 +15,7 @@
 | LobeHub | `lobehub.000328.xyz` | Authentik OIDC（已配置，secret 为 placeholder） | 已集成 |
 | NewAPI | `matrix.000328.xyz:3000` | 本地账号密码 | 未集成 |
 
-NewAPI 共 23 个活跃用户（含 admin），其中 21 个有邮箱，`wubinstu` 和 `admin` 无邮箱。
+NewAPI 共 23 个活跃用户，其中 21 个有邮箱，`wubinstu` 和 `admin` 无邮箱。无邮箱用户不迁移。
 
 ## 方案：内置 OIDC + 迁移脚本预填 oidc_id
 
@@ -41,11 +41,11 @@ NewAPI 共 23 个活跃用户（含 admin），其中 21 个有邮箱，`wubinst
 
 #### Step 2: Authentik — 批量创建用户
 
-在 Authentik 中为 21 个有邮箱的 NewAPI 用户创建账号：
+在 Authentik 中为有邮箱的 NewAPI 用户创建账号（共 21 个）。按邮箱匹配，无邮箱的 `admin` 和 `wubinstu` 不迁移：
 
 | 用户 | 邮箱 |
 |------|------|
-| admin | root@example.com（已存在为 akadmin） |
+| akadmin | root@example.com |
 | LetYouFlyUp | 2633739128@qq.com |
 | umey | meygure@gmail.com |
 | glen | 2292873772@qq.com |
@@ -67,10 +67,6 @@ NewAPI 共 23 个活跃用户（含 admin），其中 21 个有邮箱，`wubinst
 | Quard | cquard@163.com |
 | hevin | 675706548@qq.com |
 
-**特殊情况：**
-- `admin`（id=1）已存在为 Authentik 的 `akadmin`（email: root@example.com），直接关联
-- `wubinstu`（id=66）无邮箱，需要单独处理（联系用户补邮箱或手动创建）
-
 创建用户时设置随机初始密码，通知用户首次登录后修改。
 
 #### Step 3: Authentik API — 获取用户 sub ID 映射
@@ -83,12 +79,10 @@ GET /api/v3/core/users/
 
 #### Step 4: NewAPI DB — 更新 users.oidc_id
 
-用映射表执行 SQL 更新：
+用映射表按邮箱匹配执行 SQL 更新：
 
 ```sql
 UPDATE users SET oidc_id = '<authentik_sub>' WHERE email = '<user_email>';
--- admin 特殊处理
-UPDATE users SET oidc_id = '<akadmin_pk>' WHERE username = 'admin';
 ```
 
 #### Step 5: NewAPI — 启用 OIDC 设置
@@ -126,7 +120,7 @@ Authorization/Token/UserInfo endpoints 通过 well-known 自动发现。
 
 ### 风险和注意事项
 
-- `wubinstu` 无邮箱，需单独处理
+- `admin` 和 `wubinstu` 无邮箱，不参与迁移，继续使用本地密码登录
 - 迁移过程不影响现有本地密码登录
 - Authentik 批量创建用户的初始密码需安全传达给用户
 - LobeHub `.env` 中多个值为 placeholder，需逐一替换为真实值才能正常运行
