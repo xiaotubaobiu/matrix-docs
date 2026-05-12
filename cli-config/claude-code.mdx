@@ -1,0 +1,51 @@
+---
+title: "Claude Code 配置"
+---
+
+CClaude Code 使用 `ANTHROPIC_AUTH_TOKEN` 和 `ANTHROPIC_BASE_URL` 连接中转站。
+
+配置文件位置：
+
+| 系统 | 配置文件 |
+| --- | --- |
+| Windows | `%USERPROFILE%\.claude\settings.json` |
+| macOS / Linux | `~/.claude/settings.json` |
+
+如果 `.claude` 目录不存在，请先创建目录。
+
+写入或合并以下配置：
+
+```json
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "sk-你的ClaudeCode分组APIKey",
+    "ANTHROPIC_BASE_URL": "https://matrix.000328.xyz:2053",
+    "API_TIMEOUT_MS": "600000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1"
+  }
+}
+```
+
+配置说明：
+
+| 字段 | 说明 |
+| --- | --- |
+| `ANTHROPIC_AUTH_TOKEN` | Matrix 控制台生成的 Claude Code 分组 API Key |
+| `ANTHROPIC_BASE_URL` | Claude Code 使用的中转站地址，不加 `/v1` |
+| `API_TIMEOUT_MS` | 请求超时时间，长任务建议设置更大 |
+| `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` | 减少非必要请求 |
+| `CLAUDE_CODE_DISABLE_TERMINAL_TITLE` | 禁止自动修改终端标题 |
+
+保存后重启终端，在项目目录运行：
+
+```bash
+claude
+```
+
+如果配置不生效，请按顺序检查：
+
+1. `settings.json` 是否是合法 JSON。
+2. `ANTHROPIC_BASE_URL` 是否没有 `/v1`。
+3. `ANTHROPIC_AUTH_TOKEN` 是否填写了完整 API Key。
+4. 当前终端是否在修改配置后重新打开。

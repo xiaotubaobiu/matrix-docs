@@ -15,14 +15,33 @@
         "groups": [
           {
             "group": "快速开始",
-            "pages": ["index"]
+            "pages": [
+              "index",
+              "getting-token"
+            ]
           },
           {
-            "group": "Token 服务",
+            "group": "账户管理",
             "pages": [
-              "token-service/getting-started",
-              "token-service/claude-code",
-              "token-service/codex",
+              "account/register",
+              "account/login",
+              "account/password"
+            ]
+          },
+          {
+            "group": "CC-Switch 的使用",
+            "pages": [
+              "cc-switch-config/introduction",
+              "cc-switch-config/claude-code",
+              "cc-switch-config/codex"
+            ]
+          },
+          {
+            "group": "CLI 配置",
+            "pages": [
+              "cli-config/env-check",
+              "cli-config/claude-code",
+              "cli-config/codex",
               "token-service/openclaw",
               "token-service/hermes"
             ]
@@ -34,14 +53,6 @@
           {
             "group": "MCP 工具",
             "pages": ["mcp/image-generation"]
-          },
-          {
-            "group": "账户管理",
-            "pages": [
-              "account/register",
-              "account/login",
-              "account/password"
-            ]
           }
         ]
       }
