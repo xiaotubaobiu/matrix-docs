@@ -49,10 +49,6 @@
           {
             "group": "LobeHub",
             "pages": ["lobehub/usage"]
-          },
-          {
-            "group": "MCP 工具",
-            "pages": ["mcp/image-generation"]
           }
         ]
       }
