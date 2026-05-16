@@ -16,7 +16,7 @@ title: "Claude Code 配置"
 | --- | --- |
 | 供应商名称 | `Matrix Claude` |
 | API Key | `sk-你的ClaudeCode分组APIKey` |
-| Base URL | `https://matrix.000328.xyz:2053` |
+| Base URL | `https://matrix.000328.xyz` |
 
 6. 保存供应商配置。
 7. 将 `Matrix Claude` 设置为当前启用供应商。
@@ -29,7 +29,7 @@ claude
 
 如果 Claude Code 启动后仍然提示登录、鉴权失败或无法连接，请检查：
 
-- Base URL 是否为 `https://matrix.000328.xyz:2053`。
+- Base URL 是否为 `https://matrix.000328.xyz`。
 - Base URL 末尾是否误加了 `/v1`。
 - API Key 是否属于 Claude Code 对应分组。
 - 修改配置后是否已经重启 Claude Code 和终端。
@@ -40,7 +40,7 @@ CC-Switch 写入配置后，Claude Code 的实际环境变量通常等价于：
 {
   "env": {
     "ANTHROPIC_AUTH_TOKEN": "sk-你的ClaudeCode分组APIKey",
-    "ANTHROPIC_BASE_URL": "https://matrix.000328.xyz:2053"
+    "ANTHROPIC_BASE_URL": "https://matrix.000328.xyz"
   }
 }
 ```
