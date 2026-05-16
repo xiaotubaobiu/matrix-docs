@@ -18,14 +18,14 @@ OpenClaw 是一个开源的 AI 编程助手客户端。通过配置 Matrix Token
 
 | 设置项 | 值 |
 | --- | --- |
-| **API Base URL** | `https://matrix.000328.xyz:2053` |
+| **API Base URL** | `https://matrix.000328.xyz` |
 | **API Key** | `sk-你的Token` |
 
 或通过环境变量设置：
 
 ```bash
 export OPENCLAW_API_KEY="sk-你的Token"
-export OPENCLAW_BASE_URL="https://matrix.000328.xyz:2053"
+export OPENCLAW_BASE_URL="https://matrix.000328.xyz"
 ```
 
 ### 3. 验证
@@ -42,7 +42,7 @@ export OPENCLAW_BASE_URL="https://matrix.000328.xyz:2053"
 
 ```powershell
 [System.Environment]::SetEnvironmentVariable("OPENCLAW_API_KEY", "sk-你的Token", "User")
-[System.Environment]::SetEnvironmentVariable("OPENCLAW_BASE_URL", "https://matrix.000328.xyz:2053", "User")
+[System.Environment]::SetEnvironmentVariable("OPENCLAW_BASE_URL", "https://matrix.000328.xyz", "User")
 ```
 
 或通过图形界面设置（参考 [Claude Code Windows 配置](/token-service/claude-code)）。
