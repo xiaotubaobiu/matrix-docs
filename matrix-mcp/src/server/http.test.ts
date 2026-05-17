@@ -6,7 +6,7 @@ import { buildHealthPayload } from "./health.js";
 import { buildHttpHandler } from "./http.js";
 import { createMcpJsonRpcHandler } from "./mcp.js";
 
-test("health payload uses matrix-mcp service name", () => {
+test("health payload uses configured service name", () => {
   assert.deepEqual(buildHealthPayload("matrix-mcp", "0.1.0"), {
     ok: true,
     service: "matrix-mcp",
@@ -22,7 +22,7 @@ test("health endpoint returns ok payload", async () => {
   });
 
   const response = await handler(
-    new Request("http://127.0.0.1:8765/health", { method: "GET" }),
+    new Request("http://127.0.0.1:8767/health", { method: "GET" }),
   );
 
   assert.equal(response.status, 200);
@@ -46,7 +46,7 @@ test("initialize returns protocol version and server info", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",
@@ -76,7 +76,7 @@ test("mcp post requires bearer token", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
@@ -108,7 +108,7 @@ test("initialize verifies bearer token before dispatch", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer verified-token",
@@ -136,7 +136,7 @@ test("mcp post rejects invalid bearer token after verification", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer bad-token",
@@ -170,7 +170,7 @@ test("mcp post surfaces token verification upstream failure", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer flaky-token",
@@ -208,7 +208,7 @@ test("tools/list returns injected tools", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",
@@ -245,7 +245,7 @@ test("tools/call dispatches to injected tool", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer abc123",
@@ -277,7 +277,7 @@ test("ping returns empty result", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",
@@ -298,7 +298,7 @@ test("mcp post without handler returns 501 error", async () => {
     version: "0.1.0",
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",
@@ -344,7 +344,7 @@ test("mcp post maps invalid tool input to 400 response", async () => {
     }),
   });
 
-  const response = await handler(new Request("http://127.0.0.1:8765/mcp", {
+  const response = await handler(new Request("http://127.0.0.1:8767/mcp", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",

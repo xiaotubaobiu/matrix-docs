@@ -3,24 +3,10 @@ import { loadConfig } from "./config/env.js";
 import { verifyNewApiToken } from "./providers/newapi/token.js";
 import { buildHttpHandler } from "./server/http.js";
 import { createMcpJsonRpcHandler } from "./server/mcp.js";
-import { createGenerateImageTool } from "./tools/generate-image.js";
-import { createMimoAudioUnderstandTool } from "./tools/mimo-audio-understand.js";
-import { createMimoImageUnderstandTool } from "./tools/mimo-image-understand.js";
-import { createMimoVideoUnderstandTool } from "./tools/mimo-video-understand.js";
-import { createMimoWebReaderTool } from "./tools/mimo-web-reader.js";
-import { createMimoWebSearchReaderTool } from "./tools/mimo-web-search-reader.js";
-import { createMimoWebSearchTool } from "./tools/mimo-web-search.js";
+import { buildTools } from "./tools/registry.js";
 
 const config = loadConfig();
-const tools = [
-  createMimoWebSearchTool(config),
-  createMimoWebReaderTool(config),
-  createMimoWebSearchReaderTool(config),
-  createMimoImageUnderstandTool(config),
-  createMimoAudioUnderstandTool(config),
-  createMimoVideoUnderstandTool(config),
-  createGenerateImageTool(config),
-];
+const tools = buildTools(config);
 const mcpHandler = createMcpJsonRpcHandler({
   serviceName: config.serviceName,
   version: config.version,

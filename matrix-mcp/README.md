@@ -1,9 +1,6 @@
-# matrix-mcp
+# matrix-image-mcp
 
-Unified HTTP MCP service for:
-- MiMo web search / web reader / web search reader
-- MiMo image, audio, and video understanding
-- gpt-image-2 image generation via existing new-api gateway
+HTTP MCP service for generating images through the existing NewAPI gateway.
 
 ## Local development
 
@@ -31,18 +28,13 @@ These examples assume `MCP_PATH=/mcp`. If you change `MCP_PATH`, update the publ
 
 ## Tools
 
-- `mimo_web_search` — Search the web with MiMo and return a concise grounded summary.
-- `mimo_web_reader` — Read a public web page with MiMo and answer a focused question.
-- `mimo_web_search_reader` — Search first, then synthesize the most relevant results with MiMo.
-- `mimo_image_understand` — Understand a public image URL with MiMo.
-- `mimo_audio_understand` — Understand a public audio URL with MiMo.
-- `mimo_video_understand` — Understand a public video URL with MiMo.
-- `generate_image` — Generate one image with `gpt-image-2` and save it on the server.
+- `generate_image` — Generate one image with `gpt-image-2` and return it as an MCP image content block. Default quality is `low`; `fast` is accepted as an alias for `low`.
+
+Slow image requests return `status: pending` with a `job_id` before the MCP client timeout window. Call `generate_image` again with that `job_id` to retrieve the finished image.
 
 ## Environment
 
 Copy `.env.example` to `.env` and configure at least:
-- `DEFAULT_CHAT_MODEL`
 - `NEWAPI_BASE_URL`
 - `IMAGE_OUTPUT_DIR`
 
@@ -70,12 +62,13 @@ The server listens on `HOST:PORT` and serves:
 ## Deployment notes
 
 - `Dockerfile` builds the TypeScript project and runs the compiled Node server.
-- `docker-compose.example.yml` shows a standalone container with an output volume for generated images and forces `HOST=0.0.0.0` for container reachability.
+- `docker-compose.yml` runs the standalone container on `127.0.0.1:8767`.
+- `docker-compose.example.yml` mirrors the deployment shape and forces `HOST=0.0.0.0` for container reachability.
 - `deploy/nginx.mcp.conf` proxies `/mcp` and preserves the `Authorization` header.
 - The Docker, nginx, and client examples all assume `MCP_PATH=/mcp`; if you change that path, update all three together.
 
 ## Safety model
 
 - MCP HTTP access requires Bearer auth and verifies the caller token against the configured `NEWAPI_TOKEN_VERIFY_PATH` before dispatching MCP methods.
-- URL-based tools validate that user-provided URLs are public HTTP/HTTPS targets.
+- Generated images are returned inline to the MCP client; transient server files are deleted after the response payload is prepared.
 - Request body buffering is capped by `MAX_REQUEST_BODY_BYTES`.
