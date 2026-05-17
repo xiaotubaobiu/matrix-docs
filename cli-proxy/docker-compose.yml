@@ -1,6 +1,6 @@
 services:
   cli-proxy-api:
-    image: eceasy/cli-proxy-api-plus:latest
+    image: router-for-me/cliproxyapi:v6.10.9-local
     container_name: cli-proxy-api-plus
     ports:
       - "8317:8317"
