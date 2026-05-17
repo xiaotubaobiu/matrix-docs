@@ -55,7 +55,7 @@
     "primary": {
       "type": "button",
       "label": "控制台",
-      "href": "https://matrix.000328.xyz:2053"
+      "href": "https://matrix.000328.xyz/dashboard"
     }
   }
 }
