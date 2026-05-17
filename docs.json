@@ -41,9 +41,7 @@
             "pages": [
               "cli-config/env-check",
               "cli-config/claude-code",
-              "cli-config/codex",
-              "token-service/openclaw",
-              "token-service/hermes"
+              "cli-config/codex"
             ]
           },
           {
