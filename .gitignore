@@ -1,1 +1,48 @@
-node_modules/
+# Logs
+*.log
+logs/
+
+# New-API (源码项目，不需要跟踪)
+new-api/
+
+# CLI-Proxy auth credentials (敏感凭证)
+cli-proxy/auths/
+
+# Database
+*.db
+*.sqlite
+
+# Secrets / environment files
+.env
+.env.*
+*.secret
+*.pem
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude project memory
+.claude/
+
+# Local MCP image server output
+mcp-gpt-image2/output/
+
+# Nginx configs (server-specific)
+nginx-*.conf
+
+# Independent sub-projects (have their own repos)
+lobehub/
+epay-gateway/
+AIClient2API/
+authentik/
+docs-site/
+
+# Superpowers planning docs
+docs/superpowers/

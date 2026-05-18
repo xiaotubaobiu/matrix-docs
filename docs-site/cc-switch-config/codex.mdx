@@ -1,0 +1,68 @@
+---
+title: "Codex配置"
+---
+
+在 CC-Switch 中配置 Codex 时，请使用带 `/v1` 的 OpenAI 兼容地址。
+
+配置步骤：
+
+1. 打开 CC-Switch。
+2. 在顶部工具分组中选择 `Codex`。
+3. 点击添加供应商。
+4. 如果没有 Matrix 预设模板，选择自定义供应商。
+5. 填写供应商信息：
+
+| 字段 | 值 |
+| --- | --- |
+| 供应商名称 | `Matrix Codex` |
+| API Key | `sk-你的Codex分组APIKey` |
+| Base URL | `https://matrix.000328.xyz/v1` |
+| 默认模型 | `gpt-5.3-codex` |
+
+6. 保存供应商配置。
+7. 将 `Matrix Codex` 设置为当前启用供应商。
+8. 关闭并重新打开终端。
+9. 在项目目录运行：
+
+```bash
+codex
+```
+
+如果 Matrix 控制台显示的 Codex 模型不是 `gpt-5.3-codex`，请把默认模型改为控制台实际可用的模型名称。
+
+CC-Switch 写入配置后，Codex 的实际配置通常等价于：
+
+```toml
+model_provider = "matrix"
+model = "gpt-5.3-codex"
+
+[model_providers.matrix]
+name = "matrix"
+base_url = "https://matrix.000328.xyz/v1"
+wire_api = "responses"
+requires_openai_auth = true
+```
+
+API Key 通常写入 Codex 的认证文件：
+
+```json
+{
+  "OPENAI_API_KEY": "sk-你的Codex分组APIKey"
+}
+```
+
+如需手动核对配置，可检查以下文件：
+
+| 系统 | 配置文件 |
+| --- | --- |
+| Windows | `%USERPROFILE%\.codex\config.toml` |
+| Windows | `%USERPROFILE%\.codex\auth.json` |
+| macOS / Linux | `~/.codex/config.toml` |
+| macOS / Linux | `~/.codex/auth.json` |
+
+常见问题检查：
+
+- `base_url` 必须是 `https://matrix.000328.xyz/v1`。
+- `auth.json` 中使用 `OPENAI_API_KEY`。
+- API Key 不需要手动添加 `Bearer ` 前缀。
+- 修改配置后需要重启 `codex`。

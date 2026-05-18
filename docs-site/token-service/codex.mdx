@@ -1,0 +1,71 @@
+---
+title: "Codex 配置"
+description: "在 OpenAI Codex CLI 中配置 Matrix Token"
+---
+
+Codex 是 OpenAI 的命令行 AI 编程工具。通过配置 Matrix Token，你可以使用 Matrix 的 API 服务。
+
+## Linux / macOS
+
+### 1. 安装 Codex
+
+```bash
+npm install -g @openai/codex
+```
+
+### 2. 配置环境变量
+
+在 shell 配置文件（`~/.bashrc`、`~/.zshrc`）中添加：
+
+```bash
+export OPENAI_API_KEY="sk-你的Token"
+export OPENAI_BASE_URL="https://matrix.000328.xyz:2053/v1"
+```
+
+保存后重新加载：
+
+```bash
+source ~/.bashrc  # 或 ~/.zshrc
+```
+
+### 3. 验证
+
+```bash
+codex
+```
+
+## Windows
+
+### 1. 安装 Codex
+
+```powershell
+npm install -g @openai/codex
+```
+
+### 2. 配置环境变量
+
+```powershell
+[System.Environment]::SetEnvironmentVariable("OPENAI_API_KEY", "sk-你的Token", "User")
+[System.Environment]::SetEnvironmentVariable("OPENAI_BASE_URL", "https://matrix.000328.xyz:2053/v1", "User")
+```
+
+或通过图形界面设置（参考 [Claude Code Windows 配置](/token-service/claude-code)）。
+
+设置后重新打开终端。
+
+### 3. 验证
+
+```powershell
+codex
+```
+
+## 常见问题
+
+<Accordion>
+  <AccordionItem title="连接失败">
+    确认 Base URL 末尾有 `/v1`。Codex 需要 `https://matrix.000328.xyz:2053/v1` 而不是 `https://matrix.000328.xyz:2053`。
+  </AccordionItem>
+  <AccordionItem title="API Key 无效">
+    确认 Token 完整复制且没有多余空格或换行符。
+  </AccordionItem>
+</Accordion>
