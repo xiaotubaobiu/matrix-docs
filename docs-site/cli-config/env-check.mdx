@@ -1,0 +1,43 @@
+---
+title: "环境检查"
+---
+
+检查 Node.js 和 npm：
+
+```bash
+node --version
+npm --version
+```
+
+如果命令不可用，请先安装 Node.js LTS 版本。
+
+检查 Claude Code：
+
+```bash
+claude --version
+```
+
+如果未安装 Claude Code，可执行：
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+检查 Codex CLI：
+
+```bash
+codex --version
+```
+
+如果未安装 Codex CLI，可执行：
+
+```bash
+npm install -g @openai/codex@latest
+```
+
+准备 Matrix API Key：
+
+1. 登录 [Matrix 控制台](https://matrix.000328.xyz/dashboard)中转站控制台。
+2. 创建 API Key。
+3. 如果控制台支持分组，请分别创建 Claude Code 分组和 Codex 分组的 Key。
+4. 复制 Key 时确认没有前后空格

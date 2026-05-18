@@ -1,0 +1,53 @@
+---
+title: "Claude Code 配置"
+---
+
+在 CC-Switch 中配置 Claude Code 时，请使用不带 `/v1` 的基础地址。
+
+配置步骤：
+
+1. 打开 CC-Switch。
+2. 在顶部工具分组中选择 `Claude` 或 `Claude Code`。
+3. 点击添加供应商。
+4. 如果没有 Matrix 预设模板，选择自定义供应商。
+5. 填写供应商信息：
+
+| 字段 | 值 |
+| --- | --- |
+| 供应商名称 | `Matrix Claude` |
+| API Key | `sk-你的ClaudeCode分组APIKey` |
+| Base URL | `https://matrix.000328.xyz` |
+
+6. 保存供应商配置。
+7. 将 `Matrix Claude` 设置为当前启用供应商。
+8. 关闭并重新打开终端。
+9. 在项目目录运行：
+
+```bash
+claude
+```
+
+如果 Claude Code 启动后仍然提示登录、鉴权失败或无法连接，请检查：
+
+- Base URL 是否为 `https://matrix.000328.xyz`。
+- Base URL 末尾是否误加了 `/v1`。
+- API Key 是否属于 Claude Code 对应分组。
+- 修改配置后是否已经重启 Claude Code 和终端。
+
+CC-Switch 写入配置后，Claude Code 的实际环境变量通常等价于：
+
+```json
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "sk-你的ClaudeCode分组APIKey",
+    "ANTHROPIC_BASE_URL": "https://matrix.000328.xyz"
+  }
+}
+```
+
+如需手动核对配置，可检查 Claude Code 配置文件：
+
+| 系统 | 配置文件 |
+| --- | --- |
+| Windows | `%USERPROFILE%\.claude\settings.json` |
+| macOS / Linux | `~/.claude/settings.json` |

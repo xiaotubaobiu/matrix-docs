@@ -15,7 +15,7 @@
         "groups": [
           {
             "group": "快速开始",
-            "pages": ["index"]
+            "pages": ["index", "getting-token"]
           },
           {
             "group": "Token 服务",
@@ -28,8 +28,24 @@
             ]
           },
           {
+            "group": "CC-Switch 的使用",
+            "pages": [
+              "cc-switch-config/introduction",
+              "cc-switch-config/claude-code",
+              "cc-switch-config/codex"
+            ]
+          },
+          {
             "group": "LobeHub",
             "pages": ["lobehub/usage"]
+          },
+          {
+            "group": "CLI 配置",
+            "pages": [
+              "cli-config/env-check",
+              "cli-config/claude-code",
+              "cli-config/codex"
+            ]
           },
           {
             "group": "MCP 工具",
