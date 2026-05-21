@@ -1,8 +1,3 @@
----
-title: "Hermes 配置"
-description: "在 Hermes 中配置 Matrix Token"
----
-
 Hermes 是一个 AI 编程助手客户端。通过配置 Matrix Token，你可以使用 Matrix 的 API 服务。
 
 ## Linux / macOS
@@ -16,15 +11,15 @@ Hermes 是一个 AI 编程助手客户端。通过配置 Matrix Token，你可�
 在 Hermes 配置文件或设置界面中填入：
 
 | 设置项 | 值 |
-|--------|------|
-| **API Base URL** | `https://matrix.000328.xyz:2053` |
+| --- | --- |
+| **API Base URL** | `https://matrix.000328.xyz` |
 | **API Key** | `sk-你的Token` |
 
 或通过环境变量：
 
 ```bash
 export HERMES_API_KEY="sk-你的Token"
-export HERMES_BASE_URL="https://matrix.000328.xyz:2053"
+export HERMES_BASE_URL="https://matrix.000328.xyz"
 ```
 
 ### 3. 验证
@@ -41,7 +36,7 @@ export HERMES_BASE_URL="https://matrix.000328.xyz:2053"
 
 ```powershell
 [System.Environment]::SetEnvironmentVariable("HERMES_API_KEY", "sk-你的Token", "User")
-[System.Environment]::SetEnvironmentVariable("HERMES_BASE_URL", "https://matrix.000328.xyz:2053", "User")
+[System.Environment]::SetEnvironmentVariable("HERMES_BASE_URL", "https://matrix.000328.xyz", "User")
 ```
 
 或通过图形界面设置（参考 [Claude Code Windows 配置](/token-service/claude-code)）。
@@ -56,6 +51,6 @@ export HERMES_BASE_URL="https://matrix.000328.xyz:2053"
 
 <Accordion>
   <AccordionItem title="无法连接">
-    检查 Base URL 是否正确，确保包含 `https://` 协议头。
-  </AccordionItem>
+  检查 Base URL 是否正确，确保包含 `https://` 协议头。
+</AccordionItem>
 </Accordion>
