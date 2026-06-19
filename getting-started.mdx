@@ -1,0 +1,67 @@
+---
+title: "快速开始"
+description: "三步开始使用 Matrix API 中转服务"
+---
+
+本页带你用最短时间跑通第一次 API 调用。
+
+## 第一步:获取 Token
+
+1. 访问 [Matrix 控制台](https://matrix.000328.xyz/dashboard),注册并登录账号
+2. 进入「令牌」页面,点击「创建新 Token」
+3. 复制生成的 Token(以 `sk-` 开头)
+
+详细步骤见 [获取 Token](/getting-token)。
+
+## 第二步:确认连接信息
+
+所有调用都需要两个参数:
+
+| 参数 | 值 |
+| --- | --- |
+| **Base URL** | `https://matrix.000328.xyz` |
+| **API Key** | 你的 Token(`sk-xxx`) |
+
+## 第三步:发起第一次调用
+
+### 方式一:用 curl 测试
+
+```bash
+curl https://matrix.000328.xyz/v1/chat/completions \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "grok-3-mini-fast",
+    "messages": [{"role": "user", "content": "你好"}],
+    "stream": false
+  }'
+```
+
+如果返回 JSON 且包含 `choices` 字段,说明配置成功。
+
+### 方式二:用 Python(OpenAI SDK)
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-你的Token",
+    base_url="https://matrix.000328.xyz/v1"
+)
+
+response = client.chat.completions.create(
+    model="grok-3-mini-fast",
+    messages=[{"role": "user", "content": "你好"}]
+)
+print(response.choices[0].message.content)
+```
+
+### 方式三:配置到 AI 编程客户端
+
+如果你用的是 Claude Code、Codex 等客户端,直接看 [客户端配置](/cli-config/env-check)。
+
+## 下一步
+
+- [模型与定价](/models/overview):了解所有可用模型
+- [客户端配置](/cli-config/env-check):配置 Claude Code / Codex
+- [账户管理](/account/register):充值、查看用量

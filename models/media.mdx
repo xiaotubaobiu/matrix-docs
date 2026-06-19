@@ -1,0 +1,185 @@
+---
+title: "图片与视频生成"
+description: "使用 Grok Imagine 系列生成图片和视频"
+---
+
+Matrix 支持 Grok Imagine 系列的图片和视频生成模型。
+
+## 模型清单
+
+| 模型 | 类型 | 计费 |
+| --- | --- | --- |
+| `grok-imagine-image` | 文生图(标准) | $0.022 / 张 |
+| `grok-imagine-image-quality` | 文生图(高清) | $0.08 / 张 |
+| `grok-imagine-video` | 文生视频 | $10 / 个 |
+| `gpt-image-2` | 文生图 | 见控制台 |
+
+## 图片生成
+
+图片生成为**同步调用**:提交 prompt 后等待几秒,直接返回图片(Base64 或 URL)。
+
+### 调用示例
+
+```bash
+curl https://matrix.000328.xyz/v1/images/generations \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "grok-imagine-image",
+    "prompt": "一只在白色桌子上的红苹果",
+    "n": 1,
+    "response_format": "b64_json"
+  }'
+```
+
+### 响应格式
+
+返回 JSON,`data[0].b64_json` 是图片的 Base64 编码:
+
+```json
+{
+  "data": [
+    { "b64_json": "<Base64编码的图片数据>" }
+  ]
+}
+```
+
+### Python 示例(保存图片)
+
+```python
+import base64
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-你的Token",
+    base_url="https://matrix.000328.xyz/v1"
+)
+
+result = client.images.generate(
+    model="grok-imagine-image",
+    prompt="一只在白色桌子上的红苹果",
+    n=1,
+    response_format="b64_json"
+)
+
+image_b64 = result.data[0].b64_json
+with open("apple.png", "wb") as f:
+    f.write(base64.b64decode(image_b64))
+print("图片已保存为 apple.png")
+```
+
+### 标准版 vs 高清版
+
+| 模型 | 价格 | 适用 |
+| --- | --- | --- |
+| `grok-imagine-image` | $0.022/张 | 一般需求,便宜 |
+| `grok-imagine-image-quality` | $0.08/张 | 需要更精细、更大尺寸的图片(设计素材、打印) |
+
+## 视频生成
+
+视频生成为**异步任务**:先提交 prompt 拿到任务 ID,然后轮询直到生成完成(通常 30–60 秒),最后取回视频 URL。
+
+<Warning>
+  **重要**:视频生成目前**只支持直连上游调用**,不兼容标准 API 中转流程。请按下方说明使用。
+</Warning>
+
+### 调用流程
+
+**第 1 步:提交任务**
+
+```bash
+curl -X POST https://matrix.000328.xyz/v1/videos/generations \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "grok-imagine-video",
+    "prompt": "一只可爱的猫在草地上走",
+    "n": 1
+  }'
+```
+
+返回任务 ID:
+
+```json
+{ "request_id": "8e4170ff-bb5a-94e4-96c5-b96476eb08e7" }
+```
+
+**第 2 步:轮询任务状态**
+
+```bash
+curl https://matrix.000328.xyz/v1/videos/{request_id} \
+  -H "Authorization: Bearer sk-你的Token"
+```
+
+返回进度:
+
+```json
+{ "status": "pending", "progress": 56 }
+```
+
+每 10–15 秒查询一次,直到 `status` 变成 `done`。
+
+**第 3 步:获取结果**
+
+```json
+{
+  "status": "done",
+  "video": {
+    "url": "https://vidgen.x.ai/.../xxx.mp4",
+    "duration": 8
+  },
+  "progress": 100
+}
+```
+
+`video.url` 就是生成的视频,可直接下载。
+
+### Python 完整示例
+
+```python
+import time
+import requests
+
+BASE = "https://matrix.000328.xyz"
+HEADERS = {
+    "Authorization": "Bearer sk-你的Token",
+    "Content-Type": "application/json"
+}
+
+# 1. 提交
+r = requests.post(f"{BASE}/v1/videos/generations", headers=HEADERS,
+                  json={"model": "grok-imagine-video",
+                        "prompt": "一只猫在草地上走", "n": 1})
+rid = r.json()["request_id"]
+print(f"任务已提交: {rid}")
+
+# 2. 轮询
+for _ in range(20):
+    time.sleep(15)
+    r = requests.get(f"{BASE}/v1/videos/{rid}", headers=HEADERS).json()
+    print(f"状态: {r.get('status')} 进度: {r.get('progress')}%")
+    if r.get("status") == "done":
+        print("视频地址:", r["video"]["url"])
+        break
+```
+
+### 视频生成注意事项
+
+- **耗时**:单个 8 秒视频通常需要 30–60 秒生成
+- **成本**:每个视频 $10,远高于图片,请谨慎调用
+- **超时**:轮询间隔建议 15 秒,总等待时间留足 5 分钟
+- **时长**:生成的视频固定约 8 秒
+
+## 常见问题
+
+<Accordion>
+  <AccordionItem title="图片返回的是 Base64 还是 URL?">
+    默认返回 Base64(`b64_json`)。如需 URL,设置 `response_format: "url"`(需上游支持)。
+  </AccordionItem>
+  <AccordionItem title="视频生成失败/超时怎么办?">
+    视频生成是异步任务,偶发失败属正常。请重试。如果持续失败,检查 prompt 是否合规(涉及违规内容会被拒绝)。
+  </AccordionItem>
+  <AccordionItem title="能批量生成吗?">
+    图片可以设置 `n` 参数批量(如 `n: 4`)。视频建议串行生成,避免并发过高。
+  </AccordionItem>
+</Accordion>

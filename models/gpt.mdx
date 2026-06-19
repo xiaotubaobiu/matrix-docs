@@ -1,0 +1,109 @@
+---
+title: "GPT 系列模型"
+description: "OpenAI GPT-5.x 系列模型的使用说明"
+---
+
+Matrix 支持 OpenAI 的 GPT-5.x 系列,涵盖旗舰、主力通用、精简快速和编程向型号。
+
+## 模型清单
+
+| 模型 | 定位 | 特点 |
+| --- | --- | --- |
+| `gpt-5.5` | **GPT 旗舰** | 最强,支持深度推理(reasoning) |
+| `gpt-5.4` | 主力通用 | 综合能力强,性价比高 |
+| `gpt-5.4-mini` | 精简快速 | 又快又便宜 |
+| `gpt-5.3-codex-spark` | 编程向 | 代码补全/小任务 |
+
+## 模型详解
+
+### `gpt-5.5` 👑
+
+**GPT 当前最强模型**。综合能力最强,尤其擅长复杂推理和代码,对标 Grok-4.3 / Claude Opus。
+
+- **特点**:支持 **reasoning(深度推理)模式**,开启后会先思考再回答,质量极高但耗时更长、token 消耗更大
+- **适合**:复杂任务、重要决策、代码、数学、需要最佳质量
+- **缺点**:贵;reasoning 模式下响应慢、token 消耗大
+
+<Note>
+  reasoning 模式下,模型会消耗大量"思考 token",费用会显著上升。日常简单任务无需开启。
+</Note>
+
+### `gpt-5.4` ⚖️
+
+GPT 主力通用模型。综合能力强,在质量、速度、价格间取平衡,适合大多数场景。
+
+- **适合**:日常对话、内容生成、一般代码任务、批量处理
+- **不适合**:极度复杂的推理任务(那种用 5.5)
+
+### `gpt-5.4-mini` ⚡
+
+GPT 精简快速版。速度极快、价格便宜,牺牲部分质量。
+
+- **适合**:简单问答、高频调用、对延迟敏感、想省钱
+- **不适合**:复杂任务
+
+### `gpt-5.3-codex-spark` 💻
+
+编程向模型,专为代码补全、小任务优化,轻量快速。
+
+- **适合**:代码补全、简单代码生成、IDE 集成
+- **不适合**:长篇推理或通用对话
+
+## 调用示例
+
+### 基础对话
+
+```bash
+curl https://matrix.000328.xyz/v1/chat/completions \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5.4",
+    "messages": [{"role": "user", "content": "解释什么是闭包,用 JavaScript 举例"}],
+    "stream": false
+  }'
+```
+
+### 开启 reasoning 模式(gpt-5.5)
+
+```bash
+curl https://matrix.000328.xyz/v1/chat/completions \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5.5",
+    "messages": [{"role": "user", "content": "设计一个支持百万并发的限流算法"}],
+    "reasoning_effort": "high",
+    "stream": false
+  }'
+```
+
+<Warning>
+  reasoning 模式下响应时间可能长达 30–60 秒,请确保客户端超时设置足够长(建议 ≥ 600 秒)。详见 [客户端配置](/cli-config/env-check)。
+</Warning>
+
+## 用 OpenAI SDK 调用
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-你的Token",
+    base_url="https://matrix.000328.xyz/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-5.4",
+    messages=[{"role": "user", "content": "你好"}]
+)
+print(response.choices[0].message.content)
+```
+
+## 选型建议
+
+| 场景 | 推荐 |
+| --- | --- |
+| 最快最省钱 | `gpt-5.4-mini` |
+| 日常通用 | `gpt-5.4` |
+| 复杂推理 / 最佳质量 | `gpt-5.5`(可开 reasoning) |
+| 代码补全 | `gpt-5.3-codex-spark` |

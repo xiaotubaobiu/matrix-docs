@@ -1,0 +1,80 @@
+---
+title: "模型与定价总览"
+description: "Matrix 平台支持的全部模型清单与定价"
+---
+
+Matrix 平台支持多家厂商的主流 LLM 模型。下表是完整清单,点击各厂商页面查看详细说明。
+
+## 文本对话模型
+
+| 模型 | 厂商 | 定位 | 详情 |
+| --- | --- | --- | --- |
+| `grok-3-mini-fast` | xAI | 极速省钱 | [Grok](/models/grok) |
+| `grok-3-mini` | xAI | 轻量平衡 | [Grok](/models/grok) |
+| `grok-4.3` | xAI | **当前旗舰** | [Grok](/models/grok) |
+| `grok-4.20-0309-non-reasoning` | xAI | 4.20 快速版 | [Grok](/models/grok) |
+| `grok-4.20-0309-reasoning` | xAI | 4.20 推理版 | [Grok](/models/grok) |
+| `grok-4.20-multi-agent-0309` | xAI | 多智能体(实验) | [Grok](/models/grok) |
+| `grok-build-0.1` | xAI | 工具/Agent 向 | [Grok](/models/grok) |
+| `grok-composer-2.5-fast` | xAI | 创作快速版 | [Grok](/models/grok) |
+| `gpt-5.5` | OpenAI | **GPT 旗舰** | [GPT](/models/gpt) |
+| `gpt-5.4` | OpenAI | 主力通用 | [GPT](/models/gpt) |
+| `gpt-5.4-mini` | OpenAI | 精简快速 | [GPT](/models/gpt) |
+| `claude-opus-4-8` | Anthropic | **Claude 旗舰** | [Claude](/models/claude) |
+| `claude-opus-4-7` | Anthropic | Opus 系列 | [Claude](/models/claude) |
+| `claude-sonnet-4-6` | Anthropic | 均衡款 | [Claude](/models/claude) |
+| `claude-haiku-4-5` | Anthropic | 轻量极速 | [Claude](/models/claude) |
+
+> 完整模型列表可在控制台或通过 `GET /v1/models` 接口查看。以上列出各厂主力型号。
+
+## 图片与视频生成
+
+| 模型 | 类型 | 详情 |
+| --- | --- | --- |
+| `grok-imagine-image` | 文生图(标准) | [媒体生成](/models/media) |
+| `grok-imagine-image-quality` | 文生图(高清) | [媒体生成](/models/media) |
+| `grok-imagine-video` | 文生视频 | [媒体生成](/models/media) |
+| `gpt-image-2` | 文生图 | [媒体生成](/models/media) |
+
+## 怎么选模型
+
+### 按需求选
+
+| 你的需求 | 推荐模型 | 理由 |
+| --- | --- | --- |
+| 日常对话、省钱跑量 | `grok-3-mini-fast` / `gpt-5.4-mini` | 又快又便宜 |
+| 复杂推理、数学、算法 | `gpt-5.5` / `grok-4.20-reasoning` | 推理能力强 |
+| 编程写代码 | `gpt-5.5` / `claude-opus-4-8` | 代码能力顶级 |
+| 长文档分析 | `claude-opus-4-8` | 长上下文王者 |
+| 创意写作 | `grok-composer-2.5-fast` | 创作向优化 |
+| 生图 | `grok-imagine-image-quality` | 高质量图片 |
+| 生视频 | `grok-imagine-video` | 唯一视频选项 |
+
+### 按成本选(从低到高)
+
+```
+便宜 ◀────────────────────────────▶ 贵
+grok-3-mini-fast  gpt-5.4-mini  grok-3-mini
+grok-composer-2.5-fast  grok-4.20-non-reasoning  gpt-5.4
+grok-4.20-reasoning  claude-sonnet-4-6
+grok-4.3  gpt-5.5  claude-opus-4-8  (旗舰,贵)
+```
+
+## 定价机制
+
+Matrix 的计费分两类:
+
+**按量计费(Token 计费)**:大多数对话模型。费用 = 输入 token + 输出 token × 输出倍率。控制台「定价」页面可查看每个模型的倍率。
+
+**按次计费(固定价格)**:图片和视频生成模型。每次调用扣固定费用,与 token 无关。
+
+| 模型 | 计费方式 | 单价 |
+| --- | --- | --- |
+| `grok-imagine-image` | 按次 | $0.022 / 张 |
+| `grok-imagine-image-quality` | 按次 | $0.08 / 张 |
+| `grok-imagine-video` | 按次 | $10 / 个 |
+| 其他对话模型 | 按 token | 见控制台定价页 |
+
+<Note>
+  实际扣费还会乘以你所在**分组**的倍率(如 Gpt 组 3 折、Claude 组 4 折等),最终价格以控制台显示为准。
+</Note>

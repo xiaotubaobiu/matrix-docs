@@ -1,0 +1,123 @@
+---
+title: "Claude 系列模型"
+description: "Anthropic Claude 全系列模型的使用说明"
+---
+
+Matrix 支持 Anthropic Claude 全系列,从旗舰 Opus、均衡 Sonnet 到轻量 Haiku。
+
+## 模型清单
+
+| 模型 | 系列 | 定位 |
+| --- | --- | --- |
+| `claude-opus-4-8` | Opus | **Claude 旗舰**(最新) |
+| `claude-opus-4-7` | Opus | Opus 系列 |
+| `claude-opus-4-6` | Opus | Opus 系列 |
+| `claude-opus-4-5-20251101` | Opus | Opus 系列 |
+| `claude-opus-4-1-20250805` | Opus | Opus 系列 |
+| `claude-opus-4-20250514` | Opus | Opus 初版 |
+| `claude-sonnet-4-6` | Sonnet | 均衡款(最新) |
+| `claude-sonnet-4-5-20250929` | Sonnet | 均衡款 |
+| `claude-sonnet-4-20250514` | Sonnet | 均衡款 |
+| `claude-haiku-4-5-20251001` | Haiku | 轻量极速(最新) |
+| `claude-3-5-haiku-20241022` | Haiku | 轻量极速(旧版) |
+
+> 完整列表可通过 `GET /v1/models` 查看。日常使用建议选每系列的最新版(如 `claude-opus-4-8`)。
+
+## 三大系列定位
+
+### Opus 👑 —— 旗舰,最强
+
+Claude 的顶级系列,综合能力最强,尤其擅长**长上下文、深度推理、复杂代码**。价格最贵。
+
+- **适合**:复杂任务、长文档分析、重要代码、需要最佳质量
+- **缺点**:贵、较慢
+
+### Sonnet ⚖️ —— 均衡,性价比高
+
+在质量、速度、价格间取平衡,是**日常使用的最佳选择**。
+
+- **适合**:日常对话、内容生成、一般代码任务、批量处理
+
+### Haiku ⚡ —— 轻量,极速便宜
+
+速度快、价格低,牺牲部分质量。
+
+- **适合**:简单问答、高频调用、对延迟敏感、想省钱
+
+## Claude 的独特优势
+
+相比其他厂商,Claude 系列有几个突出优势:
+
+- **超长上下文**:支持数十万 token 的上下文窗口,适合长文档分析、大型代码库
+- **代码能力强**:Opus/Sonnet 在代码生成、调试上表现优异
+- **写作质量高**:文笔自然,适合内容创作、文档撰写
+- **指令遵循好**:严格按要求输出,适合结构化任务
+
+## 调用示例
+
+### 基础对话(OpenAI 兼容格式)
+
+```bash
+curl https://matrix.000328.xyz/v1/chat/completions \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-6",
+    "messages": [{"role": "user", "content": "帮我写一封礼貌的请假邮件"}],
+    "max_tokens": 1024,
+    "stream": false
+  }'
+```
+
+### Anthropic 原生格式(Messages API)
+
+```bash
+curl https://matrix.000328.xyz/v1/messages \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-opus-4-8",
+    "max_tokens": 1024,
+    "messages": [{"role": "user", "content": "解释什么是闭包"}]
+  }'
+```
+
+<Note>
+  Matrix 同时支持 **OpenAI 兼容格式**(`/v1/chat/completions`)和 **Anthropic 原生格式**(`/v1/messages`)。Claude Code 等原生客户端会自动用后者。
+</Note>
+
+### 用 Anthropic SDK 调用
+
+```python
+import anthropic
+
+client = anthropic.Anthropic(
+    api_key="sk-你的Token",
+    base_url="https://matrix.000328.xyz"
+)
+
+message = client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "你好"}]
+)
+print(message.content[0].text)
+```
+
+## 给 Claude Code 用户
+
+Claude Code 原生使用 Anthropic 协议,配置时需要:
+
+- `ANTHROPIC_BASE_URL`: `https://matrix.000328.xyz`
+- `ANTHROPIC_AUTH_TOKEN`: 你的 Token
+
+详细配置见 [Claude Code 配置](/cli-config/claude-code)。
+
+## 选型建议
+
+| 场景 | 推荐 |
+| --- | --- |
+| 最快最省钱 | `claude-haiku-4-5` |
+| 日常通用 | `claude-sonnet-4-6` |
+| 复杂任务 / 长文档 / 最佳质量 | `claude-opus-4-8` |
+| 编程写代码 | `claude-opus-4-8` 或 `claude-sonnet-4-6` |

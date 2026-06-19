@@ -17,7 +17,34 @@
             "group": "快速开始",
             "pages": [
               "index",
+              "getting-started",
               "getting-token"
+            ]
+          },
+          {
+            "group": "模型与定价",
+            "pages": [
+              "models/overview",
+              "models/grok",
+              "models/gpt",
+              "models/claude",
+              "models/media"
+            ]
+          },
+          {
+            "group": "客户端配置",
+            "pages": [
+              "cli-config/env-check",
+              "cli-config/claude-code",
+              "cli-config/codex"
+            ]
+          },
+          {
+            "group": "CC-Switch",
+            "pages": [
+              "cc-switch-config/introduction",
+              "cc-switch-config/claude-code",
+              "cc-switch-config/codex"
             ]
           },
           {
@@ -27,26 +54,6 @@
               "account/login",
               "account/password"
             ]
-          },
-          {
-            "group": "CC-Switch 的使用",
-            "pages": [
-              "cc-switch-config/introduction",
-              "cc-switch-config/claude-code",
-              "cc-switch-config/codex"
-            ]
-          },
-          {
-            "group": "CLI 配置",
-            "pages": [
-              "cli-config/env-check",
-              "cli-config/claude-code",
-              "cli-config/codex"
-            ]
-          },
-          {
-            "group": "LobeHub",
-            "pages": ["lobehub/usage"]
           }
         ]
       }
