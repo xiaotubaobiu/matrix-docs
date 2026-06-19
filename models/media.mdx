@@ -79,16 +79,16 @@ print("图片已保存为 apple.png")
 
 视频生成为**异步任务**:先提交 prompt 拿到任务 ID,然后轮询直到生成完成(通常 30–60 秒),最后取回视频 URL。
 
-<Warning>
-  **重要**:视频生成目前**只支持直连上游调用**,不兼容标准 API 中转流程。请按下方说明使用。
-</Warning>
+<Note>
+  视频端点使用单数路径 <code>/v1/video/generations</code>(注意是 <code>video</code>,不是 <code>videos</code>)。这是 API 中转的标准路径,与上游 xAI 文档的复数形式不同。
+</Note>
 
 ### 调用流程
 
 **第 1 步:提交任务**
 
 ```bash
-curl -X POST https://matrix.000328.xyz/v1/videos/generations \
+curl -X POST https://matrix.000328.xyz/v1/video/generations \
   -H "Authorization: Bearer sk-你的Token" \
   -H "Content-Type: application/json" \
   -d '{
@@ -107,7 +107,7 @@ curl -X POST https://matrix.000328.xyz/v1/videos/generations \
 **第 2 步:轮询任务状态**
 
 ```bash
-curl https://matrix.000328.xyz/v1/videos/{request_id} \
+curl https://matrix.000328.xyz/v1/video/{request_id} \
   -H "Authorization: Bearer sk-你的Token"
 ```
 
@@ -147,7 +147,7 @@ HEADERS = {
 }
 
 # 1. 提交
-r = requests.post(f"{BASE}/v1/videos/generations", headers=HEADERS,
+r = requests.post(f"{BASE}/v1/video/generations", headers=HEADERS,
                   json={"model": "grok-imagine-video",
                         "prompt": "一只猫在草地上走", "n": 1})
 rid = r.json()["request_id"]
@@ -156,7 +156,7 @@ print(f"任务已提交: {rid}")
 # 2. 轮询
 for _ in range(20):
     time.sleep(15)
-    r = requests.get(f"{BASE}/v1/videos/{rid}", headers=HEADERS).json()
+    r = requests.get(f"{BASE}/v1/video/{rid}", headers=HEADERS).json()
     print(f"状态: {r.get('status')} 进度: {r.get('progress')}%")
     if r.get("status") == "done":
         print("视频地址:", r["video"]["url"])
