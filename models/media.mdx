@@ -3,20 +3,23 @@ title: "图片与视频生成"
 description: "使用 Grok Imagine 系列生成图片和视频"
 ---
 
-Matrix 支持 Grok Imagine 系列的图片和视频生成模型。
+Matrix 支持 Grok Imagine 系列的图片和视频生成模型,接口兼容 OpenAI 格式,可直接用 curl / OpenAI SDK / 任意 HTTP 客户端调用。
 
 ## 模型清单
 
-| 模型 | 类型 | 计费 |
-| --- | --- | --- |
-| `grok-imagine-image` | 文生图(标准) | $0.022 / 张 |
-| `grok-imagine-image-quality` | 文生图(高清) | $0.08 / 张 |
-| `grok-imagine-video` | 文生视频 | $10 / 个 |
-| `gpt-image-2` | 文生图 | 见控制台 |
+| 模型 | 类型 | 接口 | 同步/异步 | 计费 |
+| --- | --- | --- | --- | --- |
+| `grok-imagine-image` | 文生图 / 图生图(标准) | `/v1/images/generations` | 同步 | $0.02 / 张 |
+| `grok-imagine-image-quality` | 文生图 / 图生图(高清) | `/v1/images/generations` | 同步 | $0.05 / 张 |
+| `grok-imagine-video` | 文生视频 | `/v1/video/generations` | **异步**(需轮询) | $0.07 / 秒 |
+
+<Note>
+  实际扣费 = 单价 × 数量(或秒数) × 你所在**分组的折扣倍率**。具体折扣以控制台为准,本文价格为模型基准价。
+</Note>
 
 ## 图片生成
 
-图片生成为**同步调用**:提交 prompt 后等待几秒,直接返回图片(Base64 或 URL)。
+图片生成为**同步调用**:提交 prompt 后等待几秒,直接返回图片(URL 或 Base64)。
 
 ### 调用示例
 
@@ -26,28 +29,47 @@ curl https://matrix.000328.xyz/v1/images/generations \
   -H "Content-Type: application/json" \
   -d '{
     "model": "grok-imagine-image",
-    "prompt": "一只在白色桌子上的红苹果",
+    "prompt": "A red apple on a white table",
     "n": 1,
-    "response_format": "b64_json"
+    "response_format": "url"
   }'
 ```
 
-### 响应格式
+### 参数说明
 
-返回 JSON,`data[0].b64_json` 是图片的 Base64 编码:
+| 参数 | 类型 | 必填 | 默认 | 说明 |
+| --- | --- | --- | --- | --- |
+| `model` | string | 是 | — | `grok-imagine-image`(标准)或 `grok-imagine-image-quality`(高清) |
+| `prompt` | string | 是 | — | 图片描述,**英文效果最佳**。可写画面、光线、风格、镜头等,越具体越好 |
+| `n` | int | 否 | 1 | 一次生成几张。**每张单独计费**(`n=4` 即扣 4 张的钱) |
+| `response_format` | string | 否 | `url` | `url`(返回图片链接,推荐)或 `b64_json`(返回 Base64,适合直接嵌入保存) |
+
+<Note>
+  Grok 图片模型**不支持** `size` / `quality` 参数(输出尺寸固定),填了会被忽略。
+</Note>
+
+### 响应格式
 
 ```json
 {
+  "created": 1781854966,
   "data": [
-    { "b64_json": "<Base64编码的图片数据>" }
-  ]
+    { "url": "https://imgen.x.ai/xai-imgen/xai-tmp-imgen-xxxx.jpeg" }
+  ],
+  "usage": { "cost_in_usd_ticks": 200000000 }
 }
 ```
+
+- `data[].url`:图片直链(当 `response_format=url`)
+- `data[].b64_json`:Base64 编码(当 `response_format=b64_json`)
+
+<Warning>
+  返回的图片链接是**临时链接**,请生成后立即下载保存。
+</Warning>
 
 ### Python 示例(保存图片)
 
 ```python
-import base64
 from openai import OpenAI
 
 client = OpenAI(
@@ -57,35 +79,28 @@ client = OpenAI(
 
 result = client.images.generate(
     model="grok-imagine-image",
-    prompt="一只在白色桌子上的红苹果",
+    prompt="A red apple on a white table",
     n=1,
-    response_format="b64_json"
+    response_format="url"
 )
 
-image_b64 = result.data[0].b64_json
-with open("apple.png", "wb") as f:
-    f.write(base64.b64decode(image_b64))
-print("图片已保存为 apple.png")
+print("图片地址:", result.data[0].url)
 ```
 
 ### 标准版 vs 高清版
 
 | 模型 | 价格 | 适用 |
 | --- | --- | --- |
-| `grok-imagine-image` | $0.022/张 | 一般需求,便宜 |
-| `grok-imagine-image-quality` | $0.08/张 | 需要更精细、更大尺寸的图片(设计素材、打印) |
+| `grok-imagine-image` | $0.02/张 | 一般需求,便宜,批量出图 |
+| `grok-imagine-image-quality` | $0.05/张 | 需要更精细的图片(海报、封面、产品图、设计素材) |
+
+两者用法完全一致,只需替换 `model` 字段。
 
 ## 视频生成
 
-视频生成为**异步任务**:先提交 prompt 拿到任务 ID,然后轮询直到生成完成(通常 30–60 秒),最后取回视频 URL。
+视频生成为**异步任务**:先提交 prompt 拿到任务 ID,然后轮询直到生成完成(一个 4 秒视频通常 30–60 秒),最后取回视频 URL。
 
-<Note>
-  视频端点使用单数路径 <code>/v1/video/generations</code>(注意是 <code>video</code>,不是 <code>videos</code>)。这是 API 中转的标准路径,与上游 xAI 文档的复数形式不同。
-</Note>
-
-### 调用流程
-
-**第 1 步:提交任务**
+### 第 1 步:提交任务
 
 ```bash
 curl -X POST https://matrix.000328.xyz/v1/video/generations \
@@ -93,46 +108,81 @@ curl -X POST https://matrix.000328.xyz/v1/video/generations \
   -H "Content-Type: application/json" \
   -d '{
     "model": "grok-imagine-video",
-    "prompt": "一只可爱的猫在草地上走",
-    "n": 1
+    "prompt": "Ocean waves crashing on rocks at sunset, cinematic slow motion",
+    "seconds": "4"
   }'
 ```
 
-返回任务 ID:
+#### 参数说明
 
-```json
-{ "request_id": "8e4170ff-bb5a-94e4-96c5-b96476eb08e7" }
-```
+| 参数 | 类型 | 必填 | 默认 | 说明 |
+| --- | --- | --- | --- | --- |
+| `model` | string | 是 | — | 固定填 `grok-imagine-video` |
+| `prompt` | string | 是 | — | 视频描述,**英文最佳**。可写动作、镜头、运镜、光线、风格 |
+| `seconds` | string | 否 | `"4"` | 视频时长(秒),范围 **1–15**。**按秒计费**,越长越贵。注意是字符串,如 `"10"` |
+| `size` | string | 否 | `"720x1280"` | 分辨率。默认竖屏 720×1280;横屏填 `"1280x720"` |
 
-**第 2 步:轮询任务状态**
-
-```bash
-curl https://matrix.000328.xyz/v1/video/{request_id} \
-  -H "Authorization: Bearer sk-你的Token"
-```
-
-返回进度:
-
-```json
-{ "status": "pending", "progress": 56 }
-```
-
-每 10–15 秒查询一次,直到 `status` 变成 `done`。
-
-**第 3 步:获取结果**
+返回任务信息,记下 **`task_id`**:
 
 ```json
 {
-  "status": "done",
-  "video": {
-    "url": "https://vidgen.x.ai/.../xxx.mp4",
-    "duration": 8
-  },
-  "progress": 100
+  "task_id": "task_mrviW8iu7Y6ij9TKaJQoX5KWCCcgpomb",
+  "id": "task_mrviW8iu7Y6ij9TKaJQoX5KWCCcgpomb",
+  "object": "video",
+  "model": "grok-imagine-video",
+  "status": "queued",
+  "seconds": "4",
+  "size": "720x1280",
+  "created_at": 1781857021
 }
 ```
 
-`video.url` 就是生成的视频,可直接下载。
+### 第 2 步:轮询任务状态
+
+```bash
+curl https://matrix.000328.xyz/v1/video/generations/{task_id} \
+  -H "Authorization: Bearer sk-你的Token"
+```
+
+返回的 `data.status` 状态:
+
+| 状态 | 含义 | 处理 |
+| --- | --- | --- |
+| `QUEUED` | 排队中 | 继续轮询 |
+| `IN_PROGRESS` | 生成中 | 继续轮询 |
+| `SUCCESS` | ✅ 完成 | 从 `data.result_url` 取视频链接 |
+| `FAILURE` | ❌ 失败 | 看 `data.fail_reason`,失败会**自动退款** |
+
+建议每 **5–10 秒**轮询一次。
+
+### 第 3 步:获取结果
+
+任务完成(`SUCCESS`)后的返回:
+
+```json
+{
+  "code": "success",
+  "data": {
+    "task_id": "task_mrviW8iu...",
+    "status": "SUCCESS",
+    "progress": "100%",
+    "result_url": "https://vidgen.x.ai/xai-vidgen-bucket/xai-video-xxxx.mp4",
+    "data": {
+      "status": "done",
+      "video": {
+        "url": "https://vidgen.x.ai/xai-vidgen-bucket/xai-video-xxxx.mp4",
+        "duration": 4
+      }
+    }
+  }
+}
+```
+
+- **`data.result_url`**:视频下载直链(MP4)。
+
+<Warning>
+  视频链接同样是**临时链接**(数小时内有效),请尽快下载保存。
+</Warning>
 
 ### Python 完整示例
 
@@ -149,37 +199,57 @@ HEADERS = {
 # 1. 提交
 r = requests.post(f"{BASE}/v1/video/generations", headers=HEADERS,
                   json={"model": "grok-imagine-video",
-                        "prompt": "一只猫在草地上走", "n": 1})
-rid = r.json()["request_id"]
-print(f"任务已提交: {rid}")
+                        "prompt": "a dog running on the beach",
+                        "seconds": "4"})
+task_id = r.json()["task_id"]
+print(f"任务已提交: {task_id}")
 
 # 2. 轮询
-for _ in range(20):
-    time.sleep(15)
-    r = requests.get(f"{BASE}/v1/video/{rid}", headers=HEADERS).json()
-    print(f"状态: {r.get('status')} 进度: {r.get('progress')}%")
-    if r.get("status") == "done":
-        print("视频地址:", r["video"]["url"])
+for _ in range(30):
+    time.sleep(8)
+    data = requests.get(f"{BASE}/v1/video/generations/{task_id}",
+                        headers=HEADERS).json()["data"]
+    status = data["status"]
+    print(f"状态: {status}")
+    if status == "SUCCESS":
+        url = data["result_url"]
+        print("视频地址:", url)
+        # 3. 下载
+        with open("output.mp4", "wb") as f:
+            f.write(requests.get(url).content)
+        print("已保存为 output.mp4")
+        break
+    elif status == "FAILURE":
+        print("生成失败:", data.get("fail_reason"))
         break
 ```
 
 ### 视频生成注意事项
 
-- **耗时**:单个 8 秒视频通常需要 30–60 秒生成
-- **成本**:每个视频 $10,远高于图片,请谨慎调用
-- **超时**:轮询间隔建议 15 秒,总等待时间留足 5 分钟
-- **时长**:生成的视频固定约 8 秒
+- **耗时**:一个 4 秒视频通常 30–60 秒生成,时长越长越慢
+- **成本**:$0.07/秒。例:4 秒 ≈ $0.28、10 秒 ≈ $0.70(再乘分组折扣)
+- **时长可调**:用 `seconds` 控制,范围 1–15 秒
+- **轮询间隔**:建议 5–10 秒,总等待时间留足 5 分钟
 
 ## 常见问题
 
 <Accordion>
-  <AccordionItem title="图片返回的是 Base64 还是 URL?">
-    默认返回 Base64(`b64_json`)。如需 URL,设置 `response_format: "url"`(需上游支持)。
+  <AccordionItem title="图片返回的是 URL 还是 Base64?">
+    默认返回 URL(`response_format: "url"`)。如需 Base64,设置 `response_format: "b64_json"`,从 `data[0].b64_json` 取出后用 base64 解码保存。
   </AccordionItem>
-  <AccordionItem title="视频生成失败/超时怎么办?">
-    视频生成是异步任务,偶发失败属正常。请重试。如果持续失败,检查 prompt 是否合规(涉及违规内容会被拒绝)。
+  <AccordionItem title="图片/视频链接打不开?">
+    xAI 返回的链接都是**临时链接**(几小时内有效),请生成后立即下载保存到本地,不要长期依赖该链接。
+  </AccordionItem>
+  <AccordionItem title="视频一直 QUEUED 不动?">
+    高峰期上游排队较慢,耐心轮询;超过 5 分钟仍无结果可重新提交。失败的任务会自动退款。
+  </AccordionItem>
+  <AccordionItem title="中文 prompt 行不行?">
+    能识别,但**英文 prompt 效果明显更好**,建议用英文描述画面。
   </AccordionItem>
   <AccordionItem title="能批量生成吗?">
-    图片可以设置 `n` 参数批量(如 `n: 4`)。视频建议串行生成,避免并发过高。
+    图片可以设置 `n` 参数批量(如 `n: 4`,每张单独计费)。视频不支持 `n`,一次一个,建议串行生成。
+  </AccordionItem>
+  <AccordionItem title="怎么估算费用?">
+    图片:`张数 × 单价`(标准 $0.02 / 高清 $0.05)。视频:`秒数 × $0.07`。最终再乘以你所在分组的折扣倍率(以控制台为准)。
   </AccordionItem>
 </Accordion>
