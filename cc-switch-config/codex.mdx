@@ -17,7 +17,7 @@ title: "Codex配置"
 | 供应商名称 | `Matrix Codex` |
 | API Key | `sk-你的Codex分组APIKey` |
 | Base URL | `https://matrix.000328.xyz/v1` |
-| 默认模型 | `gpt-5.3-codex` |
+| 默认模型 | `gpt-5.4` |
 
 6. 保存供应商配置。
 7. 将 `Matrix Codex` 设置为当前启用供应商。
@@ -28,13 +28,13 @@ title: "Codex配置"
 codex
 ```
 
-如果 Matrix 控制台显示的 Codex 模型不是 `gpt-5.3-codex`，请把默认模型改为控制台实际可用的模型名称。
+如果 Matrix 控制台显示的 Codex 模型不是 `gpt-5.4`，请把默认模型改为控制台实际可用的模型名称。
 
 CC-Switch 写入配置后，Codex 的实际配置通常等价于：
 
 ```toml
 model_provider = "matrix"
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 
 [model_providers.matrix]
 name = "matrix"

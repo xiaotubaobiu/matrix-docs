@@ -46,9 +46,9 @@ Matrix 平台已上架多家厂商的主流 LLM 模型。下表是完整清单,�
 
 | 模型 | 类型 | 计费 | 详情 |
 | --- | --- | --- | --- |
-| `grok-imagine-image` | 文生图(标准) | $0.022 / 张 | [媒体生成](/models/media) |
-| `grok-imagine-image-quality` | 文生图(高清) | $0.08 / 张 | [媒体生成](/models/media) |
-| `grok-imagine-video` | 文生视频 | $10 / 个 | [媒体生成](/models/media) |
+| `grok-imagine-image` | 文生图(标准) | $0.02 / 张 | [媒体生成](/models/media) |
+| `grok-imagine-image-quality` | 文生图(高清) | $0.05 / 张 | [媒体生成](/models/media) |
+| `grok-imagine-video` | 文生视频 | $0.07 / 秒 | [媒体生成](/models/media) |
 | `gpt-image-2` | 文生图 | 见控制台 | [媒体生成](/models/media) |
 
 ## 怎么选模型
@@ -81,15 +81,15 @@ Matrix 的计费分两类:
 
 **按量计费(Token 计费)**:大多数对话模型。费用 = 输入 token + 输出 token × 输出倍率。控制台「定价」页面可查看每个模型的倍率。
 
-**按次计费(固定价格)**:图片和视频生成模型。每次调用扣固定费用,与 token 无关。
+**按次计费(固定价格)**:图片按张、视频按秒计费,与 token 无关。
 
 | 模型 | 计费方式 | 单价 |
 | --- | --- | --- |
-| `grok-imagine-image` | 按次 | $0.022 / 张 |
-| `grok-imagine-image-quality` | 按次 | $0.08 / 张 |
-| `grok-imagine-video` | 按次 | $10 / 个 |
+| `grok-imagine-image` | 按张 | $0.02 / 张 |
+| `grok-imagine-image-quality` | 按张 | $0.05 / 张 |
+| `grok-imagine-video` | 按秒 | $0.07 / 秒 |
 | 其他对话模型 | 按 token | 见控制台定价页 |
 
 <Note>
-  实际扣费还会乘以你所在**分组**的倍率(如 Gpt 组 3 折、Claude 组 4 折等),最终价格以控制台显示为准。
+  实际扣费还会乘以你所在**分组**的倍率:Gpt 组 3 折、Claude 组 4 折、Grok 组 5 折、Glm 组原价。最终价格以控制台显示为准。
 </Note>
