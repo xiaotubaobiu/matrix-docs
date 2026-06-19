@@ -69,5 +69,8 @@
       "label": "控制台",
       "href": "https://matrix.000328.xyz/dashboard"
     }
+  },
+  "interaction": {
+    "drilldown": false
   }
 }
