@@ -1,53 +1,80 @@
 ---
 title: "GPT 系列模型"
-description: "OpenAI GPT-5.x 系列模型的使用说明"
+description: "OpenAI GPT-5.x 系列及配套工具模型的使用说明"
 ---
 
-Matrix 支持 OpenAI 的 GPT-5.x 系列,涵盖旗舰、主力通用、精简快速和编程向型号。
+Matrix 已上架 OpenAI 的 GPT-5.x 系列主力模型、Plus 增强版,以及图片生成和代码审查工具模型。
 
-## 模型清单
+## 已上架模型
 
-| 模型 | 定位 | 特点 |
+| 模型 | 类型 | 定位 |
 | --- | --- | --- |
-| `gpt-5.5` | **GPT 旗舰** | 最强,支持深度推理(reasoning) |
-| `gpt-5.4` | 主力通用 | 综合能力强,性价比高 |
-| `gpt-5.4-mini` | 精简快速 | 又快又便宜 |
-| `gpt-5.3-codex-spark` | 编程向 | 代码补全/小任务 |
+| `gpt-5.5` | 文本 | **GPT 旗舰** |
+| `gpt-5.5-plus` | 文本 | 旗舰增强版 |
+| `gpt-5.4` | 文本 | 主力通用 |
+| `gpt-5.4-plus` | 文本 | 主力增强版 |
+| `gpt-5.4-mini` | 文本 | 精简快速 |
+| `codex-auto-review` | 工具 | 代码自动审查 |
+| `gpt-image-2` | 图片 | 文生图 |
 
-## 模型详解
+> `gpt-image-2` 的使用见 [媒体生成](/models/media)。
+
+## 文本模型详解
 
 ### `gpt-5.5` 👑
 
 **GPT 当前最强模型**。综合能力最强,尤其擅长复杂推理和代码,对标 Grok-4.3 / Claude Opus。
 
-- **特点**:支持 **reasoning(深度推理)模式**,开启后会先思考再回答,质量极高但耗时更长、token 消耗更大
 - **适合**:复杂任务、重要决策、代码、数学、需要最佳质量
-- **缺点**:贵;reasoning 模式下响应慢、token 消耗大
+- **缺点**:贵,响应相对慢
 
-<Note>
-  reasoning 模式下,模型会消耗大量"思考 token",费用会显著上升。日常简单任务无需开启。
-</Note>
+### `gpt-5.5-plus` ✨
+
+gpt-5.5 的**增强版**。相比标准版通常享有**更高的速率配额、更优的资源调度**,在高峰期体验更稳。
+
+- **适合**:对稳定性/速度有更高要求的重度用户、生产环境
+- **说明**:Plus 版主要差异在配额与调度优先级,模型能力本身与标准版一致
 
 ### `gpt-5.4` ⚖️
 
 GPT 主力通用模型。综合能力强,在质量、速度、价格间取平衡,适合大多数场景。
 
 - **适合**:日常对话、内容生成、一般代码任务、批量处理
-- **不适合**:极度复杂的推理任务(那种用 5.5)
+
+### `gpt-5.4-plus` ✨
+
+gpt-5.4 的**增强版**,享有更高配额与调度优先级,高峰期更稳。
+
+- **适合**:生产环境、对稳定性要求高的场景
 
 ### `gpt-5.4-mini` ⚡
 
 GPT 精简快速版。速度极快、价格便宜,牺牲部分质量。
 
 - **适合**:简单问答、高频调用、对延迟敏感、想省钱
-- **不适合**:复杂任务
 
-### `gpt-5.3-codex-spark` 💻
+## 工具模型
 
-编程向模型,专为代码补全、小任务优化,轻量快速。
+### `codex-auto-review` 🔍
 
-- **适合**:代码补全、简单代码生成、IDE 集成
-- **不适合**:长篇推理或通用对话
+代码自动审查工具模型。非通用对话模型,专为**自动化代码审查工作流**设计,适合集成到 CI/CD 或代码提交流程中自动 review。
+
+- **适合**:自动化代码审查、CI 流水线集成
+- **注意**:这是工作流工具,不适合用来聊天或通用问答
+
+## Plus 版是什么?
+
+你可能会看到 `gpt-5.4` 和 `gpt-5.4-plus`、`gpt-5.5` 和 `gpt-5.5-plus` 成对出现。区别是:
+
+| 版本 | 标准版 | Plus 版 |
+| --- | --- | --- |
+| 模型能力 | 相同 | 相同 |
+| 速率配额 | 标准 | **更高** |
+| 调度优先级 | 标准 | **更高** |
+| 高峰期稳定性 | 一般 | **更稳** |
+| 价格 | 标准 | 较高 |
+
+简单说:**Plus = 同样的模型,但配额更高、高峰期更不容易排队/限速**。如果你是重度用户或用在生产环境,选 Plus 体验更稳;日常使用标准版即可。
 
 ## 调用示例
 
@@ -64,25 +91,7 @@ curl https://matrix.000328.xyz/v1/chat/completions \
   }'
 ```
 
-### 开启 reasoning 模式(gpt-5.5)
-
-```bash
-curl https://matrix.000328.xyz/v1/chat/completions \
-  -H "Authorization: Bearer sk-你的Token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-5.5",
-    "messages": [{"role": "user", "content": "设计一个支持百万并发的限流算法"}],
-    "reasoning_effort": "high",
-    "stream": false
-  }'
-```
-
-<Warning>
-  reasoning 模式下响应时间可能长达 30–60 秒,请确保客户端超时设置足够长(建议 ≥ 600 秒)。详见 [客户端配置](/cli-config/env-check)。
-</Warning>
-
-## 用 OpenAI SDK 调用
+### 用 OpenAI SDK 调用
 
 ```python
 from openai import OpenAI
@@ -93,11 +102,15 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="gpt-5.4",
-    messages=[{"role": "user", "content": "你好"}]
+    model="gpt-5.5",
+    messages=[{"role": "user", "content": "设计一个支持百万并发的限流算法"}]
 )
 print(response.choices[0].message.content)
 ```
+
+<Warning>
+  复杂推理任务响应时间可能较长,请确保客户端超时设置足够(建议 ≥ 600 秒)。详见 [客户端配置](/cli-config/env-check)。
+</Warning>
 
 ## 选型建议
 
@@ -105,5 +118,6 @@ print(response.choices[0].message.content)
 | --- | --- |
 | 最快最省钱 | `gpt-5.4-mini` |
 | 日常通用 | `gpt-5.4` |
-| 复杂推理 / 最佳质量 | `gpt-5.5`(可开 reasoning) |
-| 代码补全 | `gpt-5.3-codex-spark` |
+| 复杂任务 / 最佳质量 | `gpt-5.5` |
+| 生产环境 / 重度使用 | `gpt-5.4-plus` 或 `gpt-5.5-plus` |
+| 自动化代码审查 | `codex-auto-review` |

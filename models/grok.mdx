@@ -1,22 +1,18 @@
 ---
 title: "Grok 系列模型"
-description: "xAI Grok 全系列模型的使用说明与选型指南"
+description: "xAI Grok 系列模型的使用说明与选型指南"
 ---
 
-Grok 是 xAI 推出的主流大模型系列。Matrix 支持 Grok 全系列,涵盖日常对话、深度推理、内容创作、图片和视频生成。
+Grok 是 xAI 推出的主流大模型系列。Matrix 已上架 Grok 的核心文本模型与图片/视频生成模型。
 
-## 模型清单
+## 已上架模型
 
 | 模型 | 类型 | 定位 |
 | --- | --- | --- |
 | `grok-3-mini-fast` | 文本 | 极速省钱 |
 | `grok-3-mini` | 文本 | 轻量平衡 |
 | `grok-4.3` | 文本 | **当前旗舰** |
-| `grok-4.20-0309-non-reasoning` | 文本 | 4.20 快速版 |
-| `grok-4.20-0309-reasoning` | 文本 | 4.20 推理版 |
-| `grok-4.20-multi-agent-0309` | 文本 | 多智能体(实验) |
 | `grok-build-0.1` | 文本 | 工具/Agent 向 |
-| `grok-composer-2.5-fast` | 文本 | 创作快速版 |
 | `grok-imagine-image` | 图片 | 标准文生图 |
 | `grok-imagine-image-quality` | 图片 | 高清文生图 |
 | `grok-imagine-video` | 视频 | 文生视频 |
@@ -27,7 +23,7 @@ Grok 是 xAI 推出的主流大模型系列。Matrix 支持 Grok 全系列,涵�
 
 ### `grok-3-mini-fast` ⚡
 
-Grok-3 系列最快最便宜的版本,响应速度极快(约 0.6–4 秒)。
+Grok-3 系列最快最便宜的版本,响应速度极快。
 
 - **适合**:简单问答、高频调用、实时聊天、对延迟敏感的场景
 - **不适合**:复杂推理、长文生成
@@ -46,56 +42,11 @@ Grok-3 的精简标准版,在速度和质量间取平衡。
 - **适合**:复杂任务、重要决策、代码、分析、需要最佳质量
 - **缺点**:贵、较慢
 
-### `grok-4.20-0309-reasoning` 🧠
-
-Grok-4.20 系列的**推理增强版**。开启深度推理链(Chain of Thought),会"想一下再答"。
-
-- **适合**:数学题、逻辑推理、复杂调试、算法题
-- **特点**:返回结果中会带 `reasoning_content` 字段,记录推理过程
-- **缺点**:慢、贵
-
-### `grok-4.20-0309-non-reasoning` 🏃
-
-Grok-4.20 系列的**非推理版**。关闭深度推理,直接回答,速度快、成本低。
-
-- **适合**:日常问答、信息查询、想用 4.20 质量但嫌 reasoning 慢
-- **不适合**:复杂数学/逻辑
-
-### `grok-4.20-multi-agent-0309` 🤝
-
-**多智能体协作版**(实验性)。内部用多个 agent 分工协作处理复杂任务。
-
-- **适合**:复杂任务分解、研究类、需要多视角综合
-- **⚠️ 注意**:
-  - **Token 消耗大**:一次请求可能消耗数千到上万 token,成本远高于普通模型
-  - **耗时长**:agent 编排较慢,长任务请把客户端超时调大(建议 ≥ 600 秒)
-  - 建议仅用于真正需要的复杂场景,日常聊天不要用
-
 ### `grok-build-0.1` 🔧
 
 专为 **agentic 和 function calling(工具调用)** 优化的模型,擅长理解工具、执行步骤、多轮规划。
 
 - **适合**:AI 助手、自动化工作流、调用 API/工具的场景、Cursor/Claude Code 类应用
-
-### `grok-composer-2.5-fast` ✍️
-
-专为**内容创作**优化的快速版,擅长写文章、文案、邮件、创意文本。
-
-- **适合**:写文章、营销文案、内容生成、SEO
-
-## 4.20 系列:三个独立模型还是参数切换?
-
-很多人会问:4.20 的 reasoning / non-reasoning / multi-agent 是不是一个模型用参数切换?
-
-**不是。xAI 官方发布的就是 3 个独立的模型名**,你需要用不同的 `model` 字段调用,不能在同一个模型上用参数切换推理/非推理。
-
-但每个模型内部还有 `reasoning.effort` 参数微调:
-
-| 模型 | `reasoning.effort` 的作用 |
-| --- | --- |
-| `grok-4.20-reasoning` | 控制推理深度(low/medium/high) |
-| `grok-4.20-multi-agent` | 控制**协作 agent 数量**(注意:不是推理深度) |
-| `grok-4.20-non-reasoning` | 无此参数(它不推理) |
 
 ## 调用示例
 
@@ -112,18 +63,21 @@ curl https://matrix.000328.xyz/v1/chat/completions \
   }'
 ```
 
-### 推理模型带 effort 参数
+### 用 OpenAI SDK 调用
 
-```bash
-curl https://matrix.000328.xyz/v1/chat/completions \
-  -H "Authorization: Bearer sk-你的Token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "grok-4.20-0309-reasoning",
-    "messages": [{"role": "user", "content": "证明根号2是无理数"}],
-    "reasoning_effort": "high",
-    "stream": false
-  }'
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-你的Token",
+    base_url="https://matrix.000328.xyz/v1"
+)
+
+response = client.chat.completions.create(
+    model="grok-3-mini-fast",
+    messages=[{"role": "user", "content": "你好"}]
+)
+print(response.choices[0].message.content)
 ```
 
 ## 选型建议
@@ -131,8 +85,6 @@ curl https://matrix.000328.xyz/v1/chat/completions \
 | 场景 | 推荐 |
 | --- | --- |
 | 最快最省钱 | `grok-3-mini-fast` |
-| 日常平衡 | `grok-3-mini` 或 `grok-4.20-non-reasoning` |
-| 最高质量 | `grok-4.3` |
-| 数学/逻辑/算法 | `grok-4.20-reasoning` |
-| 写文章/文案 | `grok-composer-2.5-fast` |
-| 做 AI Agent | `grok-build-0.1` |
+| 日常平衡 | `grok-3-mini` |
+| 最高质量 / 复杂任务 | `grok-4.3` |
+| 做 AI Agent / 工具调用 | `grok-build-0.1` |

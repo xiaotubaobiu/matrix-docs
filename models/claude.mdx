@@ -1,57 +1,42 @@
 ---
 title: "Claude 系列模型"
-description: "Anthropic Claude 全系列模型的使用说明"
+description: "Anthropic Claude Opus 系列模型的使用说明"
 ---
 
-Matrix 支持 Anthropic Claude 全系列,从旗舰 Opus、均衡 Sonnet 到轻量 Haiku。
+Matrix 已上架 Anthropic Claude 的 **Opus 旗舰系列**。Opus 是 Claude 综合能力最强的型号,擅长长上下文、深度推理和复杂代码。
 
-## 模型清单
+## 已上架模型
 
-| 模型 | 系列 | 定位 |
-| --- | --- | --- |
-| `claude-opus-4-8` | Opus | **Claude 旗舰**(最新) |
-| `claude-opus-4-7` | Opus | Opus 系列 |
-| `claude-opus-4-6` | Opus | Opus 系列 |
-| `claude-opus-4-5-20251101` | Opus | Opus 系列 |
-| `claude-opus-4-1-20250805` | Opus | Opus 系列 |
-| `claude-opus-4-20250514` | Opus | Opus 初版 |
-| `claude-sonnet-4-6` | Sonnet | 均衡款(最新) |
-| `claude-sonnet-4-5-20250929` | Sonnet | 均衡款 |
-| `claude-sonnet-4-20250514` | Sonnet | 均衡款 |
-| `claude-haiku-4-5-20251001` | Haiku | 轻量极速(最新) |
-| `claude-3-5-haiku-20241022` | Haiku | 轻量极速(旧版) |
+| 模型 | 定位 |
+| --- | --- |
+| `claude-opus-4-8` | **最新旗舰** |
+| `claude-opus-4-7` | Opus 系列 |
+| `claude-opus-4-6` | Opus 系列 |
 
-> 完整列表可通过 `GET /v1/models` 查看。日常使用建议选每系列的最新版(如 `claude-opus-4-8`)。
+> 日常使用建议选最新的 `claude-opus-4-8`。三个版本都是 Opus 旗舰级,数字越大越新。
 
-## 三大系列定位
+## Opus 系列定位
 
-### Opus 👑 —— 旗舰,最强
-
-Claude 的顶级系列,综合能力最强,尤其擅长**长上下文、深度推理、复杂代码**。价格最贵。
-
-- **适合**:复杂任务、长文档分析、重要代码、需要最佳质量
-- **缺点**:贵、较慢
-
-### Sonnet ⚖️ —— 均衡,性价比高
-
-在质量、速度、价格间取平衡,是**日常使用的最佳选择**。
-
-- **适合**:日常对话、内容生成、一般代码任务、批量处理
-
-### Haiku ⚡ —— 轻量,极速便宜
-
-速度快、价格低,牺牲部分质量。
-
-- **适合**:简单问答、高频调用、对延迟敏感、想省钱
-
-## Claude 的独特优势
-
-相比其他厂商,Claude 系列有几个突出优势:
+Opus 是 Claude 的**顶级系列**,综合能力最强,尤其擅长:
 
 - **超长上下文**:支持数十万 token 的上下文窗口,适合长文档分析、大型代码库
-- **代码能力强**:Opus/Sonnet 在代码生成、调试上表现优异
+- **代码能力强**:在代码生成、调试上表现优异
 - **写作质量高**:文笔自然,适合内容创作、文档撰写
 - **指令遵循好**:严格按要求输出,适合结构化任务
+
+作为旗舰系列,Opus 质量最高,适合对效果要求高的场景。
+
+## 版本怎么选?
+
+三个上架的版本都是 Opus 旗舰,能力接近:
+
+| 版本 | 建议 |
+| --- | --- |
+| `claude-opus-4-8` | **首选**,最新版本,能力与稳定性最佳 |
+| `claude-opus-4-7` | 次新,可作备选 |
+| `claude-opus-4-6` | 较早版本 |
+
+如果是新项目或重要任务,直接用 `claude-opus-4-8`。如果某些场景对特定旧版本有兼容需求,再用 4-7 / 4-6。
 
 ## 调用示例
 
@@ -62,7 +47,7 @@ curl https://matrix.000328.xyz/v1/chat/completions \
   -H "Authorization: Bearer sk-你的Token" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "claude-sonnet-4-6",
+    "model": "claude-opus-4-8",
     "messages": [{"role": "user", "content": "帮我写一封礼貌的请假邮件"}],
     "max_tokens": 1024,
     "stream": false
@@ -117,7 +102,8 @@ Claude Code 原生使用 Anthropic 协议,配置时需要:
 
 | 场景 | 推荐 |
 | --- | --- |
-| 最快最省钱 | `claude-haiku-4-5` |
-| 日常通用 | `claude-sonnet-4-6` |
-| 复杂任务 / 长文档 / 最佳质量 | `claude-opus-4-8` |
-| 编程写代码 | `claude-opus-4-8` 或 `claude-sonnet-4-6` |
+| 任何 Opus 场景(首选) | `claude-opus-4-8` |
+| 长文档分析 | `claude-opus-4-8` |
+| 编程写代码 | `claude-opus-4-8` |
+
+> 如果以上模型不能满足需求,可联系管理员反馈,我们会评估上架更多型号。

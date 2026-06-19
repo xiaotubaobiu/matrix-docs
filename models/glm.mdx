@@ -1,0 +1,73 @@
+---
+title: "GLM 系列模型"
+description: "智谱 GLM 系列模型的使用说明"
+---
+
+Matrix 已上架智谱 AI 的 GLM 系列。GLM 是国产主流大模型,擅长中文理解和通用对话。
+
+## 已上架模型
+
+| 模型 | 定位 |
+| --- | --- |
+| `glm-5.2` | **最新旗舰** |
+| `glm-4.7` | 主力通用 |
+
+## 模型详解
+
+### `glm-5.2` 👑
+
+GLM **当前最强模型**,最新一代旗舰。综合能力最强,对标 GPT-5 / Claude Opus。
+
+- **适合**:复杂任务、重要决策、长文本、中文场景
+- **特点**:中文理解和生成表现优异
+
+### `glm-4.7` ⚖️
+
+GLM 主力通用模型。能力均衡,适合大多数场景,价格更友好。
+
+- **适合**:日常对话、内容生成、一般任务
+
+## GLM 的特点
+
+- **中文优势**:作为国产模型,在中文语境理解、中文写作、本土化场景上表现突出
+- **性价比高**:同等能力下价格通常优于海外旗舰
+- **合规友好**:符合国内监管要求,适合面向国内用户的服务
+
+## 调用示例
+
+### 基础对话
+
+```bash
+curl https://matrix.000328.xyz/v1/chat/completions \
+  -H "Authorization: Bearer sk-你的Token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "glm-5.2",
+    "messages": [{"role": "user", "content": "用中文写一首关于春天的短诗"}],
+    "stream": false
+  }'
+```
+
+### 用 OpenAI SDK 调用
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-你的Token",
+    base_url="https://matrix.000328.xyz/v1"
+)
+
+response = client.chat.completions.create(
+    model="glm-5.2",
+    messages=[{"role": "user", "content": "你好"}]
+)
+print(response.choices[0].message.content)
+```
+
+## 选型建议
+
+| 场景 | 推荐 |
+| --- | --- |
+| 复杂任务 / 最佳质量 / 中文场景 | `glm-5.2` |
+| 日常通用 / 性价比 | `glm-4.7` |

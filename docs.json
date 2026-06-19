@@ -28,6 +28,7 @@
               "models/grok",
               "models/gpt",
               "models/claude",
+              "models/glm",
               "models/media"
             ]
           },

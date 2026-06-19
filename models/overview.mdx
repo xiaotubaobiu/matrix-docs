@@ -1,40 +1,55 @@
 ---
 title: "模型与定价总览"
-description: "Matrix 平台支持的全部模型清单与定价"
+description: "Matrix 平台已上架的全部模型清单与定价"
 ---
 
-Matrix 平台支持多家厂商的主流 LLM 模型。下表是完整清单,点击各厂商页面查看详细说明。
+Matrix 平台已上架多家厂商的主流 LLM 模型。下表是完整清单,点击各厂商页面查看详细说明。
 
 ## 文本对话模型
 
-| 模型 | 厂商 | 定位 | 详情 |
-| --- | --- | --- | --- |
-| `grok-3-mini-fast` | xAI | 极速省钱 | [Grok](/models/grok) |
-| `grok-3-mini` | xAI | 轻量平衡 | [Grok](/models/grok) |
-| `grok-4.3` | xAI | **当前旗舰** | [Grok](/models/grok) |
-| `grok-4.20-0309-non-reasoning` | xAI | 4.20 快速版 | [Grok](/models/grok) |
-| `grok-4.20-0309-reasoning` | xAI | 4.20 推理版 | [Grok](/models/grok) |
-| `grok-4.20-multi-agent-0309` | xAI | 多智能体(实验) | [Grok](/models/grok) |
-| `grok-build-0.1` | xAI | 工具/Agent 向 | [Grok](/models/grok) |
-| `grok-composer-2.5-fast` | xAI | 创作快速版 | [Grok](/models/grok) |
-| `gpt-5.5` | OpenAI | **GPT 旗舰** | [GPT](/models/gpt) |
-| `gpt-5.4` | OpenAI | 主力通用 | [GPT](/models/gpt) |
-| `gpt-5.4-mini` | OpenAI | 精简快速 | [GPT](/models/gpt) |
-| `claude-opus-4-8` | Anthropic | **Claude 旗舰** | [Claude](/models/claude) |
-| `claude-opus-4-7` | Anthropic | Opus 系列 | [Claude](/models/claude) |
-| `claude-sonnet-4-6` | Anthropic | 均衡款 | [Claude](/models/claude) |
-| `claude-haiku-4-5` | Anthropic | 轻量极速 | [Claude](/models/claude) |
+### Grok(xAI)
 
-> 完整模型列表可在控制台或通过 `GET /v1/models` 接口查看。以上列出各厂主力型号。
+| 模型 | 定位 | 详情 |
+| --- | --- | --- |
+| `grok-3-mini-fast` | 极速省钱 | [Grok](/models/grok) |
+| `grok-3-mini` | 轻量平衡 | [Grok](/models/grok) |
+| `grok-4.3` | **当前旗舰** | [Grok](/models/grok) |
+| `grok-build-0.1` | 工具/Agent 向 | [Grok](/models/grok) |
+
+### GPT(OpenAI)
+
+| 模型 | 定位 | 详情 |
+| --- | --- | --- |
+| `gpt-5.5` | **GPT 旗舰** | [GPT](/models/gpt) |
+| `gpt-5.5-plus` | 旗舰增强版 | [GPT](/models/gpt) |
+| `gpt-5.4` | 主力通用 | [GPT](/models/gpt) |
+| `gpt-5.4-plus` | 主力增强版 | [GPT](/models/gpt) |
+| `gpt-5.4-mini` | 精简快速 | [GPT](/models/gpt) |
+| `codex-auto-review` | 代码自动审查(工具) | [GPT](/models/gpt) |
+
+### Claude(Anthropic)
+
+| 模型 | 定位 | 详情 |
+| --- | --- | --- |
+| `claude-opus-4-8` | **最新旗舰** | [Claude](/models/claude) |
+| `claude-opus-4-7` | Opus 系列 | [Claude](/models/claude) |
+| `claude-opus-4-6` | Opus 系列 | [Claude](/models/claude) |
+
+### GLM(智谱)
+
+| 模型 | 定位 | 详情 |
+| --- | --- | --- |
+| `glm-5.2` | **最新旗舰** | [GLM](/models/glm) |
+| `glm-4.7` | 主力通用 | [GLM](/models/glm) |
 
 ## 图片与视频生成
 
-| 模型 | 类型 | 详情 |
-| --- | --- | --- |
-| `grok-imagine-image` | 文生图(标准) | [媒体生成](/models/media) |
-| `grok-imagine-image-quality` | 文生图(高清) | [媒体生成](/models/media) |
-| `grok-imagine-video` | 文生视频 | [媒体生成](/models/media) |
-| `gpt-image-2` | 文生图 | [媒体生成](/models/media) |
+| 模型 | 类型 | 计费 | 详情 |
+| --- | --- | --- | --- |
+| `grok-imagine-image` | 文生图(标准) | $0.022 / 张 | [媒体生成](/models/media) |
+| `grok-imagine-image-quality` | 文生图(高清) | $0.08 / 张 | [媒体生成](/models/media) |
+| `grok-imagine-video` | 文生视频 | $10 / 个 | [媒体生成](/models/media) |
+| `gpt-image-2` | 文生图 | 见控制台 | [媒体生成](/models/media) |
 
 ## 怎么选模型
 
@@ -43,10 +58,11 @@ Matrix 平台支持多家厂商的主流 LLM 模型。下表是完整清单,点�
 | 你的需求 | 推荐模型 | 理由 |
 | --- | --- | --- |
 | 日常对话、省钱跑量 | `grok-3-mini-fast` / `gpt-5.4-mini` | 又快又便宜 |
-| 复杂推理、数学、算法 | `gpt-5.5` / `grok-4.20-reasoning` | 推理能力强 |
+| 复杂推理、数学、算法 | `gpt-5.5` | 推理能力强 |
 | 编程写代码 | `gpt-5.5` / `claude-opus-4-8` | 代码能力顶级 |
 | 长文档分析 | `claude-opus-4-8` | 长上下文王者 |
-| 创意写作 | `grok-composer-2.5-fast` | 创作向优化 |
+| 中文场景 / 国产模型 | `glm-5.2` | 中文优势明显 |
+| 生产环境 / 重度使用 | `gpt-5.4-plus` / `gpt-5.5-plus` | 配额高、高峰稳 |
 | 生图 | `grok-imagine-image-quality` | 高质量图片 |
 | 生视频 | `grok-imagine-video` | 唯一视频选项 |
 
@@ -54,9 +70,8 @@ Matrix 平台支持多家厂商的主流 LLM 模型。下表是完整清单,点�
 
 ```
 便宜 ◀────────────────────────────▶ 贵
-grok-3-mini-fast  gpt-5.4-mini  grok-3-mini
-grok-composer-2.5-fast  grok-4.20-non-reasoning  gpt-5.4
-grok-4.20-reasoning  claude-sonnet-4-6
+grok-3-mini-fast  gpt-5.4-mini  glm-4.7
+grok-3-mini  gpt-5.4  glm-5.2
 grok-4.3  gpt-5.5  claude-opus-4-8  (旗舰,贵)
 ```
 
